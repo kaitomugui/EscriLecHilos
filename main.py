@@ -55,6 +55,8 @@ def escritor():
       escribirBaseDatos()
       bd.release()
       estado = False
+      fin = time.time()
+      print(fin-inicio)
 
 
 escritor1 = Thread(target=escritor)
@@ -73,5 +75,6 @@ escritor1.start()
 escritor2.start()
 escritor3.start()
 
+escritor3.join()
 fin = time.time()
-print(fin-inicio)
+print(fin - inicio)
