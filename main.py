@@ -1,6 +1,9 @@
 from threading import Thread, Semaphore
 from time import sleep
+import time
 import logging
+
+inicio = time.time()
 
 mutex = Semaphore(1)
 bd = Semaphore(1)
@@ -27,7 +30,8 @@ def pensarDatos():
 
 def lector():
     global cl
-    while(True):
+    estado = True
+    while(estado):
         mutex.acquire()
         cl = cl + 1
         if cl == 1:
@@ -40,13 +44,18 @@ def lector():
             bd.release()
         mutex.release()
         usarBasedeDatos()
+        estado = False
+
 
 def escritor():
-    while(True):
+    estado = True
+    while(estado):
       pensarDatos()
       bd.acquire()
       escribirBaseDatos()
       bd.release()
+      estado = False
+
 
 escritor1 = Thread(target=escritor)
 escritor2 = Thread(target=escritor)
@@ -64,3 +73,5 @@ escritor1.start()
 escritor2.start()
 escritor3.start()
 
+fin = time.time()
+print(fin-inicio)
