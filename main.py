@@ -21,11 +21,11 @@ def usarBasedeDatos():
 
 def escribirBaseDatos():
     logging.info("Escribir Base de Datos")
-    sleep(10)
+    sleep(5)
 
 def pensarDatos():
     logging.info("(Espera)Pensar que escribir")
-    sleep(6)
+    sleep(3)
 
 
 def lector():
@@ -34,14 +34,20 @@ def lector():
     while(estado):
         mutex.acquire()
         cl = cl + 1
+
         if cl == 1:
             bd.acquire()
+
         mutex.release()
+
         leerBaseDatos()
+
         mutex.acquire()
+
         cl = cl - 1
         if cl==0:
             bd.release()
+
         mutex.release()
         usarBasedeDatos()
         estado = False
