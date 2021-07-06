@@ -81,6 +81,6 @@ escritor1.start()
 escritor2.start()
 escritor3.start()
 
+escritor1.join()
+escritor2.join()
 escritor3.join()
-fin = time.time()
-print(fin - inicio)
