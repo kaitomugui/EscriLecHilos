@@ -81,6 +81,10 @@ escritor1.start()
 escritor2.start()
 escritor3.start()
 
+lector1.join()
+lector2.join()
+lector3.join()
+
 escritor1.join()
 escritor2.join()
 escritor3.join()
