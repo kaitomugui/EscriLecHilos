@@ -2,19 +2,15 @@ from threading import Thread, Semaphore
 from time import sleep
 import time
 import logging
-
 inicio = time.time()
-
 mutex = Semaphore(1)
 bd = Semaphore(1)
 cl = 0
-
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] (%(threadName)-s) %(message)s')
 
 def leerBaseDatos():
     logging.info("Leer Base de Datos")
     sleep(3)
-
 def usarBasedeDatos():
     logging.info("Usar Lectura de Datos")
     sleep(4)
@@ -22,11 +18,9 @@ def usarBasedeDatos():
 def escribirBaseDatos():
     logging.info("Escribir Base de Datos")
     sleep(5)
-
 def pensarDatos():
     logging.info("(Espera)Pensar que escribir")
     sleep(3)
-
 
 def lector():
     global cl
@@ -34,24 +28,17 @@ def lector():
     while(estado):
         mutex.acquire()
         cl = cl + 1
-
         if cl == 1:
             bd.acquire()
-
         mutex.release()
-
         leerBaseDatos()
-
         mutex.acquire()
-
         cl = cl - 1
         if cl==0:
             bd.release()
-
         mutex.release()
         usarBasedeDatos()
         estado = False
-
 
 def escritor():
     estado = True
@@ -63,30 +50,25 @@ def escritor():
       estado = False
 
 
+listaLectores = []    # Crear Lectores
+for i in range(0, 10):
+    l = Thread(target=lector)
+    l.start()
+    listaLectores.append(l)
 
-escritor1 = Thread(target=escritor)
-escritor2 = Thread(target=escritor)
-escritor3 = Thread(target=escritor)
+listaEscritores = []    # Crear Escritores
+for i in range(0, 10):
+    esc = Thread(target=escritor)
+    esc.start()
+    listaEscritores.append(esc)
 
-lector1 = Thread(target=lector)
-lector2 = Thread(target=lector)
-lector3 = Thread(target=lector)
+ # Esperar Lectores
+for l in listaLectores:
+    l.join()
 
-lector1.start()
-lector2.start()
-lector3.start()
-
-escritor1.start()
-escritor2.start()
-escritor3.start()
-
-lector1.join()
-lector2.join()
-lector3.join()
-
-escritor1.join()
-escritor2.join()
-escritor3.join()
+# Esperar escritores
+for e in listaEscritores:
+    e.join()
 
 fin = time.time()
 print(fin - inicio)
